@@ -2,6 +2,8 @@
 
 [![Security Audited by AI](https://img.shields.io/badge/Security_Audited_by-Multi_AI-blue?style=for-the-badge)](./SECURITY-REVIEW.md)
 
+![Xpaper Demo](./demo.gif)
+
 Xpaper is a Chrome extension that curates and summarizes your X (Twitter) timeline into a clean, readable newsletter format using various LLM providers (Google Gemini, Anthropic Claude, OpenAI, or custom APIs).
 
 This project adheres to rigorous security standards. The entire codebase and architecture have been aggressively audited and hardened by multiple advanced AI models. Vulnerabilities such as XSS, DNS Rebinding, and plaintext credential storage have been systematically eliminated. 

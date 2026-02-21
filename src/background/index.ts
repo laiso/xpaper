@@ -46,7 +46,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.storage.local.get('xpaper_settings', async (data) => {
             const settings: any = data.xpaper_settings || {};
             const provider = settings.provider || 'gemini';
-            const modelName = provider === 'custom' ? settings.customModelName : undefined;
+            // Allow the user to override the model name for any provider
+            const modelName = settings.customModelName;
             const customApiUrl = provider === 'custom' ? settings.customApiUrl : undefined;
 
             if (customApiUrl) {

@@ -173,7 +173,7 @@ export default function App({ extractFn }: Props) {
         setIsOpen(true);
 
         try {
-            const storage = await chrome.storage.sync.get('xpaper_settings');
+            const storage = await chrome.storage.local.get('xpaper_settings');
             const settings = storage.xpaper_settings as Partial<Settings> || {};
 
             // Grok URL length limitation check: Cap the extraction count to ~15 

@@ -77,6 +77,3 @@ function initOverlay() {
 
 // Initialize immediately
 initOverlay();
-
-// Initialize immediately
-initOverlay();
