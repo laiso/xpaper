@@ -20,22 +20,23 @@ For detailed audit methodology and current security status, refer to [SECURITY-R
 
 ## Installation and Setup
 
-1. Clone the repository
-git clone <repository-url>
+```bash
+# 1. Clone the repository
+git clone https://github.com/laiso/xpaper.git
 cd xpaper
 
-2. Install dependencies
+# 2. Install dependencies (Bun is recommended)
 bun install
 
-3. Build the extension
+# 3. Build the extension
 bun run build
+```
 
 ## Loading the Extension in Chrome
 
-1. Open Google Chrome and navigate to chrome://extensions/
-2. Enable "Developer mode" in the top right corner.
-3. Click "Load unpacked" in the top left corner.
-4. Select the "dist" folder located inside your cloned xpaper directory.
+1. Open Chrome and navigate to `chrome://extensions/`.
+2. Enable "Developer mode" in the top right.
+3. Click "Load unpacked" and select the generated `dist` folder.
 
 ## Development
 
