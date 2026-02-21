@@ -1,0 +1,174 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color: #333;
+  background-color: #f8f9fa;
+  /* Light gray background like chrome settings */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #e8eaed;
+    background-color: #202124;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.options-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.badge {
+  font-size: 12px;
+  background-color: #e8eaed;
+  color: #5f6368;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  font-weight: normal;
+}
+
+@media (prefers-color-scheme: dark) {
+  .badge {
+    background-color: #3c4043;
+    color: #bdc1c6;
+  }
+}
+
+.subtitle {
+  color: #5f6368;
+  margin: 0 0 24px 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .subtitle {
+    color: #9aa0a6;
+  }
+}
+
+/* Card Style for Sections */
+.config-section {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .config-section {
+    background-color: #292a2d;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  }
+}
+
+h2 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+  color: #1a73e8;
+  /* Chrome blue headers */
+}
+
+@media (prefers-color-scheme: dark) {
+  h2 {
+    color: #8ab4f8;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.nested-group {
+  padding-left: 16px;
+  border-left: 2px solid #dadce0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nested-group {
+    border-left-color: #5f6368;
+  }
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.text-input,
+.textarea-input,
+.select-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+
+  .text-input,
+  .textarea-input,
+  .select-input {
+    background-color: #202124;
+    border-color: #5f6368;
+    color: #e8eaed;
+  }
+}
+
+.text-input:focus,
+.textarea-input:focus,
+.select-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: inset 0 0 0 1px #1a73e8;
+}
+
+@media (prefers-color-scheme: dark) {
+
+  .text-input:focus,
+  .textarea-input:focus,
+  .select-input:focus {
+    border-color: #8ab4f8;
+    box-shadow: inset 0 0 0 1px #8ab4f8;
+  }
+}
+
+.textarea-input {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.help-text {
+  font-size: 12px;
+  color: #5f6368;
+  margin: 6px 0 0 0;
+  line-height: 1.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  .help-text {
+    color: #9aa0a6;
+  }
+}
