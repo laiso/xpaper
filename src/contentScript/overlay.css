@@ -1,0 +1,427 @@
+/* Styles injected into the Shadow DOM for the Overlay UI */
+
+:host {
+    all: initial;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    /* Base theme respecting system preferences */
+    --bg-color: #ffffff;
+    --text-primary: #0f1419;
+    --text-secondary: #536471;
+    --border-color: #eff3f4;
+    --hover-bg: rgba(15, 20, 25, 0.1);
+    --accent-color: #1d9bf0;
+    --button-primary-bg: #0f1419;
+    --button-primary-text: #ffffff;
+    --button-primary-hover: #272c30;
+    --backdrop-bg: rgba(0, 0, 0, 0.5);
+
+    /* Newspaper Paper Texture Colors */
+    --paper-bg: #fdfbf7;
+    --paper-text: #2c2c2c;
+    --paper-border: #e2ddc6;
+}
+
+:host([data-theme="dark"]) {
+    --bg-color: #000000;
+    --text-primary: #e7e9ea;
+    --text-secondary: #71767b;
+    --border-color: #2f3336;
+    --hover-bg: rgba(231, 233, 234, 0.1);
+    --accent-color: #1d9bf0;
+    --button-primary-bg: #eff3f4;
+    --button-primary-text: #0f1419;
+    --button-primary-hover: #d7dbdc;
+    --backdrop-bg: rgba(255, 255, 255, 0.1);
+
+    --paper-bg: #1a1a1a;
+    --paper-text: #e0e0e0;
+    --paper-border: #333333;
+}
+
+.xpaper-fab {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    pointer-events: auto;
+    background: linear-gradient(135deg, #3a3a3a 0%, #0a0a0a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+}
+
+.xpaper-fab:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.xpaper-fab.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+.xpaper-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--backdrop-bg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+}
+
+.xpaper-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.xpaper-panel {
+    position: absolute;
+    top: 96px;
+    right: 24px;
+    pointer-events: none;
+    background-color: var(--bg-color);
+    width: 440px;
+    height: 360px;
+    border-radius: 20px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+
+    /* Animation defaults (closed state) */
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: top right;
+    z-index: 30;
+}
+
+.xpaper-panel.expanded-mode {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    top: 50vh;
+    right: 50vw;
+    width: 800px;
+    max-width: 90vw;
+    height: 85vh;
+}
+
+.xpaper-panel.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.xpaper-panel.open.expanded-mode {
+    transform: translate(50%, -50%) scale(1);
+}
+
+.xpaper-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    flex-shrink: 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.xpaper-header h1 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.clear-chip {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-chip:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.header-right {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.xpaper-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    overflow-y: auto;
+    background-color: var(--bg-color);
+}
+
+/* Scrollbar for main content */
+.xpaper-main::-webkit-scrollbar {
+    width: 8px;
+}
+
+.xpaper-main::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.xpaper-main::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+.empty-state {
+    text-align: center;
+    margin: auto;
+}
+
+.welcome-text {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.instruction {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.extracting-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    gap: 16px;
+    color: var(--accent-color);
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+.result-state {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    overflow: hidden;
+    /* Prevent the entire wrapper from scrolling out the buttons */
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.result-card {
+    background-color: transparent;
+    border: none;
+    padding: 16px 24px;
+    color: var(--text-primary);
+    box-shadow: none;
+    font-family: inherit;
+    flex: 1;
+    /* Allow the card to take up remaining space */
+    overflow-y: auto;
+    /* Let the paper itself scroll! */
+    margin-bottom: 0px;
+}
+
+/* Scrollbar for the newspaper paper itself */
+.result-card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.result-card::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.result-card::-webkit-scrollbar-thumb {
+    background-color: var(--paper-border);
+    border-radius: 4px;
+}
+
+/* Markdown Styling for Native feel */
+.markdown-body {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.md-h1,
+.md-h2,
+.md-h3 {
+    font-family: inherit;
+    color: var(--text-primary);
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.md-h1 {
+    font-size: 1.5rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+.md-h2 {
+    font-size: 1.3rem;
+}
+
+.md-h3 {
+    font-size: 1.1rem;
+}
+
+.md-p {
+    margin-top: 0;
+    margin-bottom: 1.25em;
+    text-align: left;
+}
+
+.action-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    margin-top: auto;
+    flex-shrink: 0;
+    /* Never shrink the footer */
+}
+
+.primary-button {
+    background-color: var(--button-primary-bg);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 28px;
+    color: var(--button-primary-text);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.primary-button:hover {
+    background-color: var(--button-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+.secondary-button {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    padding: 12px 28px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    transition: all 0.2s;
+}
+
+.secondary-button:hover {
+    background-color: var(--hover-bg);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
