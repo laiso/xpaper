@@ -53,4 +53,28 @@ After loading the extension, click on the Xpaper extension icon or open the Opti
 2. Your API Key for the selected provider.
 3. Output language and custom summarization prompts.
 
-Note: Xpaper relies on your local browser state and does not store your timeline data on any external servers. LLM inference requires a valid API key unless you are using experimental Chrome Built-in AI features.
+Note: Xpaper relies on your local browser state and does not store your timeline data on any external servers. LLM inference requires a valid API key unless you are using experimental Chrome Built-in AI features or a **Local LLM**.
+
+## Local LLM Support
+
+Xpaper can connect to local LLM servers like [Ollama](https://ollama.com/) or [LM Studio](https://lmstudio.ai/).
+
+To use a local LLM, set the provider to **Custom API Base URL** in the options.
+
+### Ollama Setup
+Launch Ollama with the `OLLAMA_ORIGINS` environment variable to allow the extension to communicate:
+```bash
+OLLAMA_ORIGINS="chrome-extension://*" ollama serve
+```
+- **Base URL**: `http://localhost:11434/v1/chat/completions` (or use `.local` addresses for cross-machine access)
+- **API Key**: (leave empty)
+
+### LM Studio Setup
+1. Open LM Studio and navigate to the **Local Server** (↔) tab.
+2. Enable **CORS** and set the Network Address to **Local Network (0.0.0.0)** if accessing from another machine.
+3. Start the server.
+- **Base URL**: `http://<your-ip>:1234/v1/chat/completions`
+- **API Key**: (leave empty)
+
+### Cross-Machine Access
+If running the LLM on a different machine (e.g., a Windows PC with a GPU), use mDNS hostnames (e.g., `http://ollama.local:11434/...` or `http://lmstudio.local:1234/...`). Xpaper is configured to allow `.local` and Private IP (RFC 1918) communication by default.

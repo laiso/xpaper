@@ -60,6 +60,7 @@ export default function App({ extractFn }: Props) {
     const [extractedData, setExtractedData] = useState<{ count: number, result?: string } | null>(null);
     const [isCopied, setIsCopied] = useState(false);
     const [activeProvider, setActiveProvider] = useState<string>('grok');
+    const [extractionPhase, setExtractionPhase] = useState<'idle' | 'scrolling' | 'generating'>('idle');
     const abortControllerRef = useRef<AbortController | null>(null);
 
     // Initial Provider Load
@@ -126,6 +127,7 @@ export default function App({ extractFn }: Props) {
     const updateState = (extracting: boolean, data: { count: number, result?: string } | null) => {
         setIsExtracting(extracting);
         setExtractedData(data);
+        if (!extracting) setExtractionPhase('idle');
         try {
             chrome.storage.local.set({
                 xpaper_overlay_state: {
@@ -169,6 +171,7 @@ export default function App({ extractFn }: Props) {
         abortControllerRef.current = new AbortController();
 
         // Clear previous data first so we don't flash the expanded state
+        setExtractionPhase('scrolling');
         updateState(true, null);
         setIsOpen(true);
 
@@ -221,6 +224,7 @@ export default function App({ extractFn }: Props) {
         abortControllerRef.current = new AbortController();
 
         // Clear previous data first so we don't flash the expanded state
+        setExtractionPhase('scrolling');
         updateState(true, null);
         setIsOpen(true);
 
@@ -250,6 +254,8 @@ export default function App({ extractFn }: Props) {
                 updateState(false, { count: 0, result: "No tweets found on the current screen." });
                 return;
             }
+
+            setExtractionPhase('generating');
 
             // 2. Format Prompts
             const modelName = settings?.customModelName || '';
@@ -377,7 +383,7 @@ export default function App({ extractFn }: Props) {
                     {isExtracting && (
                         <div className="extracting-state">
                             <Loader2 className="spinner" size={48} />
-                            <p>Curating your Xpaper...</p>
+                            <p>{extractionPhase === 'scrolling' ? 'Scrolling timeline...' : 'Generating Xpaper...'}</p>
                         </div>
                     )}
 

@@ -1,3 +1,4 @@
+import { isLocalEndpoint } from '../lib/network';
 import { processWithCloudLLM, ProviderType } from '../lib/llm-providers';
 import { decryptText } from '../lib/crypto';
 
@@ -50,15 +51,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             const modelName = settings.customModelName;
             const customApiUrl = provider === 'custom' ? settings.customApiUrl : undefined;
 
+            let apiKey = '';
+            let isLocal = false;
+
             if (customApiUrl) {
                 try {
                     const url = new URL(customApiUrl);
-                    if (url.protocol !== 'https:') {
-                        const isLocalhost = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
-                        if (!isLocalhost) {
-                            sendResponse({ success: false, error: 'For security reasons, custom API URLs must use HTTPS (localhost exceptions apply).' });
-                            return;
-                        }
+                    isLocal = isLocalEndpoint(url);
+
+                    if (url.protocol !== 'https:' && !isLocal) {
+                        sendResponse({ success: false, error: 'For security reasons, custom API URLs must use HTTPS (localhost exceptions apply).' });
+                        return;
                     }
                 } catch (e) {
                     sendResponse({ success: false, error: 'Invalid Custom API URL format.' });
@@ -67,16 +70,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
 
             const encryptedKey = (settings as any)?.apiKeys?.[provider];
-            if (!encryptedKey) {
+
+            // Allow empty keys for local endpoints (like Ollama or LM Studio)
+            if (!encryptedKey && !isLocal) {
                 sendResponse({ success: false, error: 'MISSING_KEY' });
                 return;
             }
 
             try {
-                const apiKey = await decryptText(encryptedKey);
-                if (!apiKey) {
-                    sendResponse({ success: false, error: 'Failed to decrypt API key. Please re-enter your key in Options.' });
-                    return;
+                if (encryptedKey) {
+                    const decrypted = await decryptText(encryptedKey);
+                    if (!decrypted && !isLocal) {
+                        sendResponse({ success: false, error: 'Failed to decrypt API key. Please re-enter your key in Options.' });
+                        return;
+                    }
+                    apiKey = decrypted || 'dummy-local-key';
+                } else if (isLocal) {
+                    apiKey = 'dummy-local-key'; // Local endpoints like Ollama don't need real keys
                 }
 
                 const result = await processWithCloudLLM(provider as ProviderType, apiKey, modelName, sysPrompt, fullPrompt, customApiUrl);
