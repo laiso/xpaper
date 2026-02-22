@@ -12,7 +12,11 @@ export default defineManifest({
     'https://*/*',
     'http://localhost/*',
     'http://127.0.0.1/*',
-    'http://[::1]/*'
+    'http://[::1]/*',
+    'http://*.local/*'
+  ],
+  optional_host_permissions: [
+    'http://*/*'
   ],
   content_security_policy: {
     extension_pages: "script-src 'self'; object-src 'self'"
@@ -32,4 +36,4 @@ export default defineManifest({
       js: ['src/contentScript/index.tsx'],
     },
   ],
-})
+} as any)

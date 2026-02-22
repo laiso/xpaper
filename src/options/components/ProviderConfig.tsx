@@ -3,6 +3,7 @@ import { Settings } from '../App'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 
 import { DEFAULT_MODELS } from '../../lib/constants'
+import { isIPAddress } from '../../lib/network'
 
 type Props = {
     settings: Settings
@@ -11,6 +12,33 @@ type Props = {
 
 export default function ProviderConfig({ settings, updateSettings }: Props) {
     const [showAdvanced, setShowAdvanced] = useState(false)
+    const [hasPermission, setHasPermission] = useState<boolean | null>(null)
+
+    // Check if permission exists for the current custom origin
+    const checkPermission = async (url: string) => {
+        if (!url || !isIPAddress(url)) {
+            setHasPermission(null)
+            return
+        }
+        try {
+            const origin = new URL(url).origin + '/*'
+            const result = await chrome.permissions.contains({ origins: [origin] })
+            setHasPermission(result)
+        } catch (e) {
+            setHasPermission(false)
+        }
+    }
+
+    const requestPermission = async () => {
+        if (!settings.customApiUrl) return
+        try {
+            const origin = new URL(settings.customApiUrl).origin + '/*'
+            const granted = await chrome.permissions.request({ origins: [origin] })
+            if (granted) setHasPermission(true)
+        } catch (e) {
+            console.error('Permission request failed', e)
+        }
+    }
 
     const handleApiKeyChange = (provider: keyof Settings['apiKeys'], value: string) => {
         updateSettings({
@@ -22,6 +50,13 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
     }
 
     const defaultModelPlaceholder = DEFAULT_MODELS[settings.provider as keyof typeof DEFAULT_MODELS] || '';
+
+    // Effect to check permission whenever URL changes
+    useState(() => {
+        if (settings.provider === 'custom' && settings.customApiUrl) {
+            checkPermission(settings.customApiUrl)
+        }
+    })
 
     return (
         <section className="config-section">
@@ -37,8 +72,19 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                     value={settings.provider}
                     onChange={(e) => {
                         const newProvider = e.target.value as Settings['provider'];
-                        const newModelName = DEFAULT_MODELS[newProvider as keyof typeof DEFAULT_MODELS] || '';
-                        updateSettings({ provider: newProvider, customModelName: newModelName });
+                        // Only overwrite if current customModelName is empty or if it's the specific default of the previous provider
+                        const currentModel = (settings.customModelName || '') as string;
+                        const isCurrentlyDefault = Object.values(DEFAULT_MODELS).includes(currentModel as any);
+
+                        const update: any = { provider: newProvider };
+                        if (!currentModel || isCurrentlyDefault) {
+                            update.customModelName = DEFAULT_MODELS[newProvider as keyof typeof DEFAULT_MODELS] || '';
+                        }
+
+                        updateSettings(update);
+                        if (newProvider === 'custom' && settings.customApiUrl) {
+                            checkPermission(settings.customApiUrl);
+                        }
                     }}
                 >
                     <option value="grok">Grok Native</option>
@@ -112,9 +158,33 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                             type="text"
                             placeholder="https://openrouter.ai/api/v1/chat/completions"
                             value={settings.customApiUrl || ''}
-                            onChange={(e) => updateSettings({ customApiUrl: e.target.value })}
+                            onChange={(e) => {
+                                updateSettings({ customApiUrl: e.target.value });
+                                checkPermission(e.target.value);
+                            }}
                         />
                         <p className="help-text" style={{ marginTop: '8px' }}>The full ChatCompletion Endpoint URL (e.g. OpenRouter, LM Studio).</p>
+
+                        {/* Dynamic Permission UI for Local IPs over HTTP */}
+                        {settings.customApiUrl && isIPAddress(settings.customApiUrl) && settings.customApiUrl.startsWith('http:') && hasPermission === false && (
+                            <div style={{ marginTop: '12px', background: '#3b0707', border: '1px solid #7f1d1d', padding: '12px', borderRadius: '6px' }}>
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: '#fca5a5', marginBottom: '8px' }}>
+                                    <strong>Access Required:</strong> Local IP addresses require explicit permission to be accessed over HTTP.
+                                </p>
+                                <button
+                                    onClick={requestPermission}
+                                    className="btn-primary"
+                                    style={{ padding: '6px 12px', fontSize: '0.8rem', background: '#ef4444' }}
+                                >
+                                    Grant Browser Permission
+                                </button>
+                            </div>
+                        )}
+                        {settings.customApiUrl && isIPAddress(settings.customApiUrl) && settings.customApiUrl.startsWith('http:') && hasPermission === true && (
+                            <p className="help-text" style={{ color: '#10b981', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ fontSize: '1rem' }}>✓</span> Local network permission granted.
+                            </p>
+                        )}
                     </div>
                     <div>
                         <label>Custom API Key</label>
@@ -136,7 +206,7 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         className="text-input"
                         type="text"
                         placeholder={defaultModelPlaceholder}
-                        value={settings.customModelName || defaultModelPlaceholder}
+                        value={settings.customModelName ?? ''}
                         onChange={(e) => updateSettings({ customModelName: e.target.value })}
                     />
                     <p className="help-text" style={{ marginTop: '8px' }}>The specific model to use for inference. You can overwrite this to use other versions (e.g. gpt-4o).</p>

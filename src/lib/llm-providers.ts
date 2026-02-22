@@ -144,23 +144,49 @@ async function callGemini(apiKey: string, modelName: string, systemPrompt: strin
     return data.candidates[0].content.parts[0].text;
 }
 
+import { isLocalEndpoint } from './network';
+
 async function callCustomAPI(apiUrl: string, apiKey: string, modelName: string, systemPrompt: string, userPrompt: string): Promise<string> {
-    const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': 'https://x.com',
-            'X-Title': 'Xpaper Extension'
-        },
-        body: JSON.stringify({
-            model: modelName,
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: userPrompt }
-            ]
-        })
-    });
+    const url = new URL(apiUrl);
+    const isLocal = isLocalEndpoint(url);
+
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+    };
+
+    // Only append OpenRouter-specific headers if it's NOT a local endpoint,
+    // as local endpoints like Ollama will throw 403 Forbidden CORS errors on unrecognized headers.
+    if (!isLocal) {
+        headers['HTTP-Referer'] = 'https://x.com';
+        headers['X-Title'] = 'Xpaper Extension';
+    }
+
+    let res;
+    const startTime = Date.now();
+    try {
+        res = await fetch(apiUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                model: modelName,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userPrompt }
+                ]
+            })
+        });
+    } catch (e: any) {
+        const elapsed = Date.now() - startTime;
+        if (e.message === 'Failed to fetch' || e.message?.includes('fetch')) {
+            if (elapsed > 10000) {
+                throw new Error(`Connection Timed Out (${Math.round(elapsed / 1000)}s). The server at ${url.host} did not respond. This is usually caused by a Firewall blocking the port, or an incorrect IP address.`);
+            } else {
+                throw new Error(`Connection Refused. Failed to reach ${url.host}. Please make sure your local AI server is running and the host is correct.`);
+            }
+        }
+        throw e;
+    }
 
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
