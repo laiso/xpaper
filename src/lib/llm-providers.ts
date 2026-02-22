@@ -67,7 +67,9 @@ async function callAnthropic(apiKey: string, modelName: string, systemPrompt: st
         headers: {
             'Content-Type': 'application/json',
             'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01'
+            'anthropic-version': '2023-06-01',
+            // Mandatory when making direct requests from browser/extension without a backend proxy
+            'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
             model: modelName,

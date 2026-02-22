@@ -87,23 +87,26 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         }
                     }}
                 >
-                    <option value="grok">Grok Native</option>
-                    <option value="gemini">Google Gemini API (Gemini 3 Flash)</option>
-                    <option value="openai">OpenAI API (GPT-5 mini)</option>
-                    <option value="anthropic">Anthropic API (Claude 4.5 Haiku)</option>
-                    <option value="custom">Custom API (OpenRouter / Local)</option>
-                    <option value="auto">Chrome Built-in AI [Experimental]</option>
+                    <optgroup label="Web Redirect">
+                        <option value="grok">X Grok (Redirect)</option>
+                    </optgroup>
+                    <optgroup label="Cloud & Local APIs">
+                        <option value="gemini">Google Gemini API (Gemini 3 Flash)</option>
+                        <option value="openai">OpenAI API (GPT-5 mini)</option>
+                        <option value="anthropic">Anthropic API (Claude 4.5 Haiku)</option>
+                        <option value="custom">Custom API (OpenRouter / Local)</option>
+                    </optgroup>
+                    <optgroup label="Experimental">
+                        <option value="auto">Chrome Built-in Model (Gemini Nano)</option>
+                    </optgroup>
                 </select>
 
                 {settings.provider === 'auto' && (
                     <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', background: '#111827', padding: '10px 12px', borderRadius: '6px', border: '1px dashed #4b5563', fontSize: '0.85rem' }}>
-                        <span className={`badge ${settings.aiModelReady ? 'saved' : ''}`} style={{ marginLeft: 0, background: settings.aiModelReady ? '#10b981' : '#ef4444', padding: '2px 6px', fontSize: '0.7rem' }}>
-                            {settings.aiModelReady ? 'READY' : 'NOT READY'}
-                        </span>
                         <span style={{ color: '#d1d5db' }}>
                             {settings.aiModelReady
                                 ? 'Local Nano model is available and ready for inference.'
-                                : 'Please ensure Chrome Built-in AI features are enabled.'}
+                                : 'Please ensure Chrome Built-in Model features are enabled in chrome://flags.'}
                         </span>
                     </div>
                 )}
@@ -242,7 +245,7 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                             <p className="help-text" style={{ marginTop: '8px' }}>
                                 Reduce this number to speed up distillation testing, or increase it for deeper context.
                                 <br />
-                                <strong style={{ color: '#d1d5db' }}>※ Note: When using "Grok Native", extraction is automatically capped at ~15 posts to avoid URL length errors.</strong>
+                                <strong style={{ color: '#d1d5db' }}>※ Note: When using "X Grok (Redirect)", extraction is automatically capped at ~15 posts to avoid URL length errors.</strong>
                             </p>
                         </div>
                     </div>

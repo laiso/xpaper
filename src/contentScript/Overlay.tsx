@@ -6,6 +6,7 @@ import { Settings } from '../options/App';
 import { buildPrompt, buildGrokPrompt } from '../lib/prompt-builder';
 import { formatApiResponse } from '../lib/result-formatter';
 import { getLocale, SupportedLanguage } from '../lib/locales';
+import { isChromeBuiltinAiAvailable } from '../lib/ai-readiness';
 type Props = {
     extractFn: (maxTweets?: number, maxScrolls?: number, signal?: AbortSignal) => Promise<any[]>;
 };
@@ -279,11 +280,8 @@ export default function App({ extractFn }: Props) {
 
             } else {
                 // Auto Flow: Try Chrome Built-in AI Locally First
+                let builtinAiAvailable = isChromeBuiltinAiAvailable(window);
                 const ai: any = window.ai || (window as any).ai || (window as any).LanguageModel;
-                let builtinAiAvailable = false;
-                if (ai && (ai.languageModel || typeof ai.create === 'function')) {
-                    builtinAiAvailable = true;
-                }
 
                 if (builtinAiAvailable) {
                     try {

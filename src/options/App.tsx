@@ -7,6 +7,7 @@ import ProviderConfig from './components/ProviderConfig'
 
 import { encryptText, decryptText } from '../lib/crypto'
 import { getLocale } from '../lib/locales'
+import { isChromeBuiltinAiAvailable } from '../lib/ai-readiness'
 
 import './index.css'
 
@@ -77,28 +78,9 @@ function App() {
             }
         };
         loadSettings();
-
         // Check Chrome Built-in AI readiness
         const checkAiReady = async () => {
-            const ai = window.ai || (window as any).ai;
-            if (!ai || !ai.languageModel) {
-                updateSettings({ aiModelReady: false });
-                return;
-            }
-            try {
-                // Handle both new .availability() and legacy .capabilities() methods
-                if (typeof ai.languageModel.availability === 'function') {
-                    const status = await ai.languageModel.availability();
-                    updateSettings({ aiModelReady: status === 'readily' || status === 'available' });
-                } else if (typeof (ai.languageModel as any).capabilities === 'function') {
-                    const capabilities = await (ai.languageModel as any).capabilities();
-                    updateSettings({ aiModelReady: capabilities.available === 'readily' || capabilities.available === 'available' });
-                } else {
-                    updateSettings({ aiModelReady: false });
-                }
-            } catch (e) {
-                updateSettings({ aiModelReady: false });
-            }
+            updateSettings({ aiModelReady: isChromeBuiltinAiAvailable(window) });
         }
         checkAiReady()
     }, [])

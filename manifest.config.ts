@@ -4,7 +4,7 @@ export default defineManifest({
   manifest_version: 3,
   name: 'Xpaper',
   description: 'Craft your personal newsletter with AI',
-  version: '1.1.0',
+  version: '1.1.1',
   permissions: ['storage'],
   host_permissions: [
     'https://x.com/*',
