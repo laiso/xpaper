@@ -52,4 +52,35 @@ describe('ProviderConfig', () => {
 
         expect(updateSettingsMock).toHaveBeenLastCalledWith({ maxTweets: 100 });
     });
+
+    it('should render Provider select with optgroups and updated labels', () => {
+        const updateSettingsMock = vi.fn();
+        render(<ProviderConfig settings={mockSettings} updateSettings={updateSettingsMock} />);
+
+        // Verify that option groups exist by their labels
+        expect(screen.getByRole('group', { name: 'Web Redirect' })).toBeDefined();
+        expect(screen.getByRole('group', { name: 'Cloud & Local APIs' })).toBeDefined();
+        expect(screen.getByRole('group', { name: 'Experimental' })).toBeDefined();
+
+        // Verify specific option text
+        expect(screen.getByRole('option', { name: 'X Grok (Redirect)' })).toBeDefined();
+        expect(screen.getByRole('option', { name: 'Chrome Built-in Model (Gemini Nano)' })).toBeDefined();
+    });
+
+    it('should not render READY/NOT READY badges and only display info text for Chrome Built-in Model', () => {
+        const updateSettingsMock = vi.fn();
+        // Test when aiModelReady is true
+        const { unmount } = render(<ProviderConfig settings={{ ...mockSettings, provider: 'auto', aiModelReady: true }} updateSettings={updateSettingsMock} />);
+
+        expect(screen.getByText('Local Nano model is available and ready for inference.')).toBeDefined();
+        // The badge element containing 'READY' or 'INFO' was explicitly removed
+        expect(screen.queryByText(/READY|INFO|NOT READY/)).toBeNull();
+
+        unmount();
+
+        // Test when aiModelReady is false
+        render(<ProviderConfig settings={{ ...mockSettings, provider: 'auto', aiModelReady: false }} updateSettings={updateSettingsMock} />);
+        expect(screen.getByText('Please ensure Chrome Built-in Model features are enabled in chrome://flags.')).toBeDefined();
+        expect(screen.queryByText(/READY|INFO|NOT READY/)).toBeNull();
+    });
 });
