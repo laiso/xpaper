@@ -18,6 +18,11 @@ export default defineManifest({
   optional_host_permissions: [
     'http://*/*'
   ],
+  icons: {
+    16: 'icon16.png',
+    48: 'icon48.png',
+    128: 'icon128.png',
+  },
   content_security_policy: {
     extension_pages: "script-src 'self'; object-src 'self'"
   },
