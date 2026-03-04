@@ -68,7 +68,6 @@ async function callAnthropic(apiKey: string, modelName: string, systemPrompt: st
             'Content-Type': 'application/json',
             'x-api-key': apiKey,
             'anthropic-version': '2023-06-01',
-            // Mandatory when making direct requests from browser/extension without a backend proxy
             'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
@@ -78,6 +77,11 @@ async function callAnthropic(apiKey: string, modelName: string, systemPrompt: st
             messages: [
                 { role: 'user', content: userPrompt }
             ],
+            tools: [{
+                type: 'web_search_20250305',
+                name: 'web_search',
+                max_uses: 3
+            }],
             temperature: 0.7,
         })
     });
@@ -92,11 +96,52 @@ async function callAnthropic(apiKey: string, modelName: string, systemPrompt: st
     }
 
     const data = await res.json();
-    return data.content[0].text;
+    
+    const resultParts: string[] = [];
+    const allCitations = new Map<string, {title: string, url: string}>();
+    
+    data.content.forEach((block: any) => {
+        if (block.type === 'text') {
+            resultParts.push(block.text);
+            
+            if (block.citations && block.citations.length > 0) {
+                block.citations.forEach((cit: any) => {
+                    allCitations.set(cit.url, { title: cit.title, url: cit.url });
+                });
+            }
+        }
+    });
+    
+    let result = resultParts.join('');
+    
+    if (allCitations.size > 0) {
+        const sources = Array.from(allCitations.values())
+            .map(c => `- [${c.title}](${c.url})`)
+            .join('\n');
+        result += `\n\n---\n### Sources\n${sources}`;
+    }
+    
+    return result;
 }
 
 async function callGemini(apiKey: string, modelName: string, systemPrompt: string, userPrompt: string): Promise<string> {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
+
+    const requestBody = {
+        system_instruction: {
+            parts: [{ text: systemPrompt }]
+        },
+        contents: [
+            {
+                role: 'user',
+                parts: [{ text: userPrompt }]
+            }
+        ],
+        tools: [{ googleSearch: {} }],
+        generationConfig: {
+            temperature: 0.7,
+        }
+    };
 
     const res = await fetch(url, {
         method: 'POST',
@@ -104,20 +149,7 @@ async function callGemini(apiKey: string, modelName: string, systemPrompt: strin
             'Content-Type': 'application/json',
             'x-goog-api-key': apiKey
         },
-        body: JSON.stringify({
-            system_instruction: {
-                parts: [{ text: systemPrompt }]
-            },
-            contents: [
-                {
-                    role: 'user',
-                    parts: [{ text: userPrompt }]
-                }
-            ],
-            generationConfig: {
-                temperature: 0.7,
-            }
-        })
+        body: JSON.stringify(requestBody)
     });
 
     if (!res.ok) {
@@ -139,10 +171,12 @@ async function callGemini(apiKey: string, modelName: string, systemPrompt: strin
     }
 
     const data = await res.json();
+    
     if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
         console.error("Gemini unexpected response format", data);
         throw new Error("Unexpected response format from Gemini API");
     }
+    
     return data.candidates[0].content.parts[0].text;
 }
 
