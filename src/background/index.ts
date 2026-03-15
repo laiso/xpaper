@@ -1,6 +1,7 @@
 import { isLocalEndpoint } from '../lib/network';
 import { processWithCloudLLM, ProviderType } from '../lib/llm-providers';
 import { decryptText } from '../lib/crypto';
+import { t } from '../lib/i18n';
 
 console.log('Xpaper background script loaded');
 
@@ -11,16 +12,9 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
-// Broadcast TOGGLE_OVERLAY to the active tab when the extension icon is clicked
-chrome.action.onClicked.addListener(async (tab) => {
-    if (!tab.id) return;
-
-    try {
-        await chrome.tabs.sendMessage(tab.id, { action: 'TOGGLE_OVERLAY' });
-    } catch (e) {
-        // If content script isn't injected yet (e.g. reload), inject it or notify
-        console.warn('Could not send toggle message', e);
-    }
+// Open Options page when the extension icon is clicked
+chrome.action.onClicked.addListener(async () => {
+    chrome.runtime.openOptionsPage();
 });
 
 // Message router for bypassing X.com CSP
@@ -36,7 +30,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const url = sender.url || (sender.tab && sender.tab.url);
         if (!url || !url.startsWith('https://x.com/')) {
             console.warn('Blocked LLM API call from untrusted origin/URL:', url);
-            sendResponse({ success: false, error: 'Unauthorized request origin.' });
+            sendResponse({ success: false, error: t('unauthorizedOrigin') });
             return false;
         }
     }
@@ -60,11 +54,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     isLocal = isLocalEndpoint(url);
 
                     if (url.protocol !== 'https:' && !isLocal) {
-                        sendResponse({ success: false, error: 'For security reasons, custom API URLs must use HTTPS (localhost exceptions apply).' });
+                        sendResponse({ success: false, error: t('httpsRequired') });
                         return;
                     }
                 } catch (e) {
-                    sendResponse({ success: false, error: 'Invalid Custom API URL format.' });
+                    sendResponse({ success: false, error: t('invalidApiUrl') });
                     return;
                 }
             }
@@ -81,7 +75,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 if (encryptedKey) {
                     const decrypted = await decryptText(encryptedKey);
                     if (!decrypted && !isLocal) {
-                        sendResponse({ success: false, error: 'Failed to decrypt API key. Please re-enter your key in Options.' });
+                        sendResponse({ success: false, error: t('decryptFailed') });
                         return;
                     }
                     apiKey = decrypted || 'dummy-local-key';
@@ -93,7 +87,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 sendResponse({ success: true, result });
             } catch (error: any) {
                 console.error('LLM API Error:', error);
-                sendResponse({ success: false, error: error.message || 'Unknown error occurred.' })
+                sendResponse({ success: false, error: error.message || t('unknownError') })
             }
         });
 

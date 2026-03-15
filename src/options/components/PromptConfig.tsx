@@ -2,6 +2,7 @@ import { Settings } from '../App'
 import { RotateCcw } from 'lucide-react'
 
 import { getLocale } from '../../lib/locales'
+import { t } from '../../lib/i18n'
 
 type Props = {
     settings: Settings
@@ -23,9 +24,9 @@ export default function PromptConfig({ settings, updateSettings }: Props) {
 
     return (
         <section className="config-section">
-            <h2>2. AI Processing Rules</h2>
+            <h2>{t('processingRulesHeading')}</h2>
             <div className="form-group">
-                <label htmlFor="aiLanguage">Output Language</label>
+                <label htmlFor="aiLanguage">{t('outputLanguage')}</label>
                 <select
                     id="aiLanguage"
                     value={settings.language || 'ja'}
@@ -47,21 +48,21 @@ export default function PromptConfig({ settings, updateSettings }: Props) {
                     className="text-input"
                     style={{ marginBottom: '16px' }}
                 >
-                    <option value="ja">Japanese</option>
-                    <option value="en">English</option>
+                    <option value="ja">{t('japanese')}</option>
+                    <option value="en">{t('english')}</option>
                 </select>
             </div>
 
             <div className="form-group">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <label htmlFor="aiPrompt" style={{ marginBottom: 0 }}>System Prompt for Xpaper</label>
+                    <label htmlFor="aiPrompt" style={{ marginBottom: 0 }}>{t('systemPromptLabel')}</label>
                     <button
                         onClick={handleResetPrompt}
                         style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}
-                        title="Reset to recommended default prompt"
+                        title={t('resetToDefault')}
                     >
                         <RotateCcw size={12} />
-                        Reset to Default
+                        {t('resetToDefault')}
                     </button>
                 </div>
                 <textarea
@@ -69,10 +70,10 @@ export default function PromptConfig({ settings, updateSettings }: Props) {
                     value={settings.topics[0]?.prompt || ''}
                     onChange={(e) => handlePromptChange(e.target.value)}
                     className="textarea-input"
-                    placeholder="Instruct the AI how to format and filter the information..."
+                    placeholder={t('promptPlaceholder')}
                 />
                 <p className="help-text">
-                    Customize how the AI evaluates and reformats extracted text. E.g., "Summarize in 3 bullet points, output as JSON."
+                    {t('promptDesc')}
                 </p>
             </div>
         </section>

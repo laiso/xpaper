@@ -1,0 +1,249 @@
+{
+  "extensionName": {
+    "message": "Xpaper",
+    "description": "拡張機能名"
+  },
+  "extensionDescription": {
+    "message": "AIでパーソナライズされたニュースレターを作成",
+    "description": "拡張機能の説明"
+  },
+  "askGrokTooltip": {
+    "message": "この投稿についてGrokに質問"
+  },
+  "summarizeWithGrok": {
+    "message": "Grokで要約"
+  },
+  "publishXpaper": {
+    "message": "Xpaperを発行"
+  },
+  "extensionUpdatedError": {
+    "message": "拡張機能が更新されました。ページを再読み込みしてください (F5)。"
+  },
+  "noTweetsFound": {
+    "message": "現在の画面にツイートが見つかりませんでした。"
+  },
+  "scrollingTimeline": {
+    "message": "タイムラインをスクロール中..."
+  },
+  "generatingXpaper": {
+    "message": "Xpaperを生成中..."
+  },
+  "apiKeyRequired": {
+    "message": "APIキーが必要です"
+  },
+  "apiKeyRequiredDesc": {
+    "message": "処理を開始するには、クラウドLLMのAPIキー（Google Geminiなど）を設定する必要があります。"
+  },
+  "openSettings": {
+    "message": "設定を開く"
+  },
+  "settingsTitle": {
+    "message": "設定"
+  },
+  "closeTitle": {
+    "message": "閉じる"
+  },
+  "readyToPublish": {
+    "message": "発行の準備完了"
+  },
+  "readyToPublishDesc": {
+    "message": "下のボタンをクリックして、タイムラインをパーソナライズされたニュースレターにまとめます。"
+  },
+  "processedItems": {
+    "message": "$COUNT$件のアイテムを処理済み",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "copiedToClipboard": {
+    "message": "クリップボードにコピーしました！"
+  },
+  "copyResult": {
+    "message": "結果をコピー"
+  },
+  "optionsTitle": {
+    "message": "オプション"
+  },
+  "optionsSubtitle": {
+    "message": "Xpaper AIの個人設定を構成します。"
+  },
+  "saved": {
+    "message": "保存しました"
+  },
+  "providerSettingsHeading": {
+    "message": "1. AIプロバイダー設定"
+  },
+  "providerSettingsDesc": {
+    "message": "使用するAIプロバイダーを選択してください。デフォルトはGoogle Gemini APIです。"
+  },
+  "activeAIProvider": {
+    "message": "アクティブなAIプロバイダー"
+  },
+  "cloudLocalAPIs": {
+    "message": "クラウド＆ローカルAPI"
+  },
+  "experimental": {
+    "message": "実験的"
+  },
+  "geminiOption": {
+    "message": "Google Gemini API (Gemini 3 Flash)"
+  },
+  "openaiOption": {
+    "message": "OpenAI API (GPT-5 mini)"
+  },
+  "anthropicOption": {
+    "message": "Anthropic API (Claude 4.5 Haiku)"
+  },
+  "customOption": {
+    "message": "カスタムAPI (OpenRouter / ローカル)"
+  },
+  "chromeNanoOption": {
+    "message": "Chrome内蔵モデル (Gemini Nano)"
+  },
+  "nanoReady": {
+    "message": "ローカルNanoモデルが利用可能で、推論の準備ができています。"
+  },
+  "nanoNotReady": {
+    "message": "chrome://flagsでChrome内蔵モデル機能が有効になっていることを確認してください。"
+  },
+  "grokRedirectMode": {
+    "message": "Grok 連携モード"
+  },
+  "grokRedirectDesc": {
+    "message": "X の Grok AI を新しいタブで開いて処理します。URL 長の制限により約 15 件の投稿に制限されます。"
+  },
+  "getApiKey": {
+    "message": "API キーを取得"
+  },
+  "grokRedirectDesc": {
+    "message": "タイムラインの内容を含むXのGrok AIを新しいタブで開きます。無料でお試しいただけます（APIキー不要）。URLの長さ制限により約15件の投稿に制限されます。"
+  },
+  "geminiApiKey": {
+    "message": "Google Gemini APIキー"
+  },
+  "requiredForGemini": {
+    "message": "Google Gemini APIを使用するために必要です。"
+  },
+  "openaiApiKey": {
+    "message": "OpenAI APIキー"
+  },
+  "anthropicApiKey": {
+    "message": "Anthropic APIキー"
+  },
+  "customApiUrl": {
+    "message": "カスタムAPIベースURL"
+  },
+  "customApiUrlDesc": {
+    "message": "完全なChatCompletionエンドポイントURL（例：OpenRouter、LM Studio）。"
+  },
+  "accessRequired": {
+    "message": "アクセス権限が必要："
+  },
+  "localIPPermissionDesc": {
+    "message": "ローカルIPアドレスにHTTP経由でアクセスするには、明示的な権限が必要です。"
+  },
+  "grantBrowserPermission": {
+    "message": "ブラウザの権限を付与"
+  },
+  "localNetworkGranted": {
+    "message": "ローカルネットワークの権限が付与されました。"
+  },
+  "customApiKey": {
+    "message": "カスタムAPIキー"
+  },
+  "modelName": {
+    "message": "モデル名"
+  },
+  "modelNameDesc": {
+    "message": "推論に使用する特定のモデル。他のバージョン（例：gemini-2.5-pro）を使用するために上書きできます。"
+  },
+  "advancedProviderSettings": {
+    "message": "詳細なプロバイダー設定"
+  },
+  "maxTweetsExtract": {
+    "message": "抽出する最大ツイート数"
+  },
+  "maxTweetsDesc": {
+    "message": "この数を減らして処理テストを高速化するか、増やしてより深いコンテキストを取得できます。"
+  },
+  "useXGrokRedirect": {
+    "message": "X Grokを使用（リダイレクトモード）"
+  },
+  "grokRedirectNote": {
+    "message": "タイムラインの内容を含むXのGrok AIを新しいタブで開きます。無料でお試しいただけます（APIキー不要）。"
+  },
+  "grokRedirectLimitNote": {
+    "message": "注意：URLの長さ制限により約15件の投稿に制限されます。"
+  },
+  "processingRulesHeading": {
+    "message": "2. AI処理ルール"
+  },
+  "outputLanguage": {
+    "message": "出力言語"
+  },
+  "systemPromptLabel": {
+    "message": "Xpaper用システムプロンプト"
+  },
+  "resetToDefault": {
+    "message": "デフォルトに戻す"
+  },
+  "resetToDefaultTitle": {
+    "message": "推奨されるデフォルトプロンプトに戻す"
+  },
+  "promptPlaceholder": {
+    "message": "AIに情報のフォーマットとフィルタリング方法を指示..."
+  },
+  "promptDesc": {
+    "message": "AIが抽出されたテキストを評価・再フォーマットする方法をカスタマイズします。例：「3つの箇条書きで要約、JSONで出力。」"
+  },
+  "sourceTargetsHeading": {
+    "message": "3. ソースターゲット"
+  },
+  "sourceTargetsDesc": {
+    "message": "Xpaperは操作を安全かつ意図的に行うため、処理対象として明示的に指定されたコンテンツのみを処理します。"
+  },
+  "primaryTarget": {
+    "message": "プライマリターゲット"
+  },
+  "xcomTwitter": {
+    "message": "X.com (Twitter)"
+  },
+  "activeTabClipping": {
+    "message": "アクティブタブのクリッピング"
+  },
+  "enabled": {
+    "message": "有効"
+  },
+  "sourceTargetHelp": {
+    "message": "X.comのページに移動し、拡張機能のポップアップを使用して、バックグラウンドスクレイピングなしで安全にコンテンツを抽出します。"
+  },
+  "unauthorizedOrigin": {
+    "message": "認証されていないリクエスト元です。"
+  },
+  "httpsRequired": {
+    "message": "セキュリティ上の理由から、カスタムAPI URLはHTTPSを使用する必要があります（localhostは例外）。"
+  },
+  "invalidApiUrl": {
+    "message": "無効なカスタムAPI URL形式です。"
+  },
+  "decryptFailed": {
+    "message": "APIキーの復号に失敗しました。オプションでキーを再入力してください。"
+  },
+  "unknownError": {
+    "message": "不明なエラーが発生しました。"
+  },
+  "extensionUpdatedReload": {
+    "message": "拡張機能が更新されました。X.comタブを再読み込み (F5) してください。"
+  },
+  "chromeAiNotAvailable": {
+    "message": "Chrome内蔵AIが利用できないか、テキストの生成に失敗しました。chrome://flagsで有効になっていることを確認してください。"
+  },
+  "japanese": {
+    "message": "日本語"
+  },
+  "english": {
+    "message": "英語"
+  }
+}

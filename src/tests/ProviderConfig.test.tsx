@@ -58,13 +58,23 @@ describe('ProviderConfig', () => {
         render(<ProviderConfig settings={mockSettings} updateSettings={updateSettingsMock} />);
 
         // Verify that option groups exist by their labels
-        expect(screen.getByRole('group', { name: 'Web Redirect' })).toBeDefined();
         expect(screen.getByRole('group', { name: 'Cloud & Local APIs' })).toBeDefined();
         expect(screen.getByRole('group', { name: 'Experimental' })).toBeDefined();
 
         // Verify specific option text
-        expect(screen.getByRole('option', { name: 'X Grok (Redirect)' })).toBeDefined();
+        expect(screen.getByRole('option', { name: 'Google Gemini API (Gemini 3 Flash)' })).toBeDefined();
         expect(screen.getByRole('option', { name: 'Chrome Built-in Model (Gemini Nano)' })).toBeDefined();
+    });
+
+    it('should render Grok option in Advanced Settings', () => {
+        const updateSettingsMock = vi.fn();
+        render(<ProviderConfig settings={mockSettings} updateSettings={updateSettingsMock} />);
+
+        // Open Advanced Settings
+        fireEvent.click(screen.getByText('Advanced Provider Settings'));
+
+        // Verify Grok checkbox exists
+        expect(screen.getByLabelText(/Use X Grok \(Redirect Mode\)/)).toBeDefined();
     });
 
     it('should not render READY/NOT READY badges and only display info text for Chrome Built-in Model', () => {

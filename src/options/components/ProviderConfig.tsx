@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Settings } from '../App'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 
+import { t } from '../../lib/i18n'
 import { DEFAULT_MODELS } from '../../lib/constants'
 import { isIPAddress } from '../../lib/network'
 
@@ -60,13 +61,13 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
 
     return (
         <section className="config-section">
-            <h2>1. AI Provider Settings</h2>
+            <h2>{t('providerSettingsHeading')}</h2>
             <p className="help-text" style={{ marginBottom: '16px' }}>
-                Select your preferred AI Provider. The default is Google Gemini API.
+                {t('providerSettingsDesc')}
             </p>
 
             <div className="form-group">
-                <label>Active AI Provider</label>
+                <label>{t('activeAIProvider')}</label>
                 <select
                     className="select-input"
                     value={settings.provider}
@@ -87,17 +88,14 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         }
                     }}
                 >
-                    <optgroup label="Web Redirect">
-                        <option value="grok">X Grok (Redirect)</option>
+                    <optgroup label={t('cloudLocalAPIs')}>
+                        <option value="gemini">{t('geminiOption')}</option>
+                        <option value="openai">{t('openaiOption')}</option>
+                        <option value="anthropic">{t('anthropicOption')}</option>
+                        <option value="custom">{t('customOption')}</option>
                     </optgroup>
-                    <optgroup label="Cloud & Local APIs">
-                        <option value="gemini">Google Gemini API (Gemini 3 Flash)</option>
-                        <option value="openai">OpenAI API (GPT-5 mini)</option>
-                        <option value="anthropic">Anthropic API (Claude 4.5 Haiku)</option>
-                        <option value="custom">Custom API (OpenRouter / Local)</option>
-                    </optgroup>
-                    <optgroup label="Experimental">
-                        <option value="auto">Chrome Built-in Model (Gemini Nano)</option>
+                    <optgroup label={t('experimental')}>
+                        <option value="auto">{t('chromeNanoOption')}</option>
                     </optgroup>
                 </select>
 
@@ -105,16 +103,24 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                     <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', background: '#111827', padding: '10px 12px', borderRadius: '6px', border: '1px dashed #4b5563', fontSize: '0.85rem' }}>
                         <span style={{ color: '#d1d5db' }}>
                             {settings.aiModelReady
-                                ? 'Local Nano model is available and ready for inference.'
-                                : 'Please ensure Chrome Built-in Model features are enabled in chrome://flags.'}
+                                ? t('nanoReady')
+                                : t('nanoNotReady')}
                         </span>
+                    </div>
+                )}
+
+                {settings.provider === 'grok' && (
+                    <div style={{ marginTop: '12px', background: '#f0f4ff', padding: '12px', borderRadius: '6px', border: '1px solid #bfdbfe', fontSize: '0.85rem' }}>
+                        <p style={{ margin: 0, color: '#4b5563' }}>
+                            <strong>{t('grokRedirectMode')}：</strong>{t('grokRedirectDesc')}
+                        </p>
                     </div>
                 )}
             </div>
 
             {settings.provider === 'gemini' && (
                 <div className="form-group nested-group" style={{ marginTop: '16px', paddingLeft: '16px', borderLeft: '2px solid #374151' }}>
-                    <label>Google Gemini API Key</label>
+                    <label>{t('geminiApiKey')}</label>
                     <input
                         className="text-input"
                         type="password"
@@ -122,13 +128,18 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         value={settings.apiKeys?.gemini || ''}
                         onChange={(e) => handleApiKeyChange('gemini', e.target.value)}
                     />
-                    <p className="help-text" style={{ marginTop: '8px' }}>Required for Google Gemini API.</p>
+                    <p className="help-text" style={{ marginTop: '8px' }}>
+                        {t('requiredForGemini')}{' '}
+                        <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa' }}>
+                            {t('getApiKey')}
+                        </a>
+                    </p>
                 </div>
             )}
 
             {settings.provider === 'openai' && (
                 <div className="form-group nested-group" style={{ marginTop: '16px', paddingLeft: '16px', borderLeft: '2px solid #374151' }}>
-                    <label>OpenAI API Key</label>
+                    <label>{t('openaiApiKey')}</label>
                     <input
                         className="text-input"
                         type="password"
@@ -136,12 +147,17 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         value={settings.apiKeys?.openai || ''}
                         onChange={(e) => handleApiKeyChange('openai', e.target.value)}
                     />
+                    <p className="help-text" style={{ marginTop: '8px' }}>
+                        <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa' }}>
+                            {t('getApiKey')}
+                        </a>
+                    </p>
                 </div>
             )}
 
             {settings.provider === 'anthropic' && (
                 <div className="form-group nested-group" style={{ marginTop: '16px', paddingLeft: '16px', borderLeft: '2px solid #374151' }}>
-                    <label>Anthropic API Key</label>
+                    <label>{t('anthropicApiKey')}</label>
                     <input
                         className="text-input"
                         type="password"
@@ -149,13 +165,18 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         value={settings.apiKeys?.anthropic || ''}
                         onChange={(e) => handleApiKeyChange('anthropic', e.target.value)}
                     />
+                    <p className="help-text" style={{ marginTop: '8px' }}>
+                        <a href="https://console.anthropic.com/keys" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa' }}>
+                            {t('getApiKey')}
+                        </a>
+                    </p>
                 </div>
             )}
 
             {settings.provider === 'custom' && (
                 <div className="form-group nested-group" style={{ marginTop: '16px', paddingLeft: '16px', borderLeft: '2px solid #374151', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
-                        <label>Custom API Base URL</label>
+                        <label>{t('customApiUrl')}</label>
                         <input
                             className="text-input"
                             type="text"
@@ -166,31 +187,31 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                                 checkPermission(e.target.value);
                             }}
                         />
-                        <p className="help-text" style={{ marginTop: '8px' }}>The full ChatCompletion Endpoint URL (e.g. OpenRouter, LM Studio).</p>
+                        <p className="help-text" style={{ marginTop: '8px' }}>{t('customApiUrlDesc')}</p>
 
                         {/* Dynamic Permission UI for Local IPs over HTTP */}
                         {settings.customApiUrl && isIPAddress(settings.customApiUrl) && settings.customApiUrl.startsWith('http:') && hasPermission === false && (
                             <div style={{ marginTop: '12px', background: '#3b0707', border: '1px solid #7f1d1d', padding: '12px', borderRadius: '6px' }}>
                                 <p style={{ margin: 0, fontSize: '0.85rem', color: '#fca5a5', marginBottom: '8px' }}>
-                                    <strong>Access Required:</strong> Local IP addresses require explicit permission to be accessed over HTTP.
+                                    <strong>{t('accessRequired')}</strong> {t('localIPPermissionDesc')}
                                 </p>
                                 <button
                                     onClick={requestPermission}
                                     className="btn-primary"
                                     style={{ padding: '6px 12px', fontSize: '0.8rem', background: '#ef4444' }}
                                 >
-                                    Grant Browser Permission
+                                    {t('grantBrowserPermission')}
                                 </button>
                             </div>
                         )}
                         {settings.customApiUrl && isIPAddress(settings.customApiUrl) && settings.customApiUrl.startsWith('http:') && hasPermission === true && (
                             <p className="help-text" style={{ color: '#10b981', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ fontSize: '1rem' }}>✓</span> Local network permission granted.
+                                <span style={{ fontSize: '1rem' }}>✓</span> {t('localNetworkGranted')}
                             </p>
                         )}
                     </div>
                     <div>
-                        <label>Custom API Key</label>
+                        <label>{t('customApiKey')}</label>
                         <input
                             className="text-input"
                             type="password"
@@ -202,9 +223,9 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                 </div>
             )}
 
-            {(settings.provider === 'openai' || settings.provider === 'anthropic' || settings.provider === 'gemini' || settings.provider === 'custom') && (
+            {(settings.provider !== 'grok' && settings.provider !== 'auto') && (
                 <div className="form-group" style={{ marginTop: '24px' }}>
-                    <label>Model Name</label>
+                    <label>{t('modelName')}</label>
                     <input
                         className="text-input"
                         type="text"
@@ -212,7 +233,7 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                         value={settings.customModelName ?? ''}
                         onChange={(e) => updateSettings({ customModelName: e.target.value })}
                     />
-                    <p className="help-text" style={{ marginTop: '8px' }}>The specific model to use for inference. You can overwrite this to use other versions (e.g. gpt-4o).</p>
+                    <p className="help-text" style={{ marginTop: '8px' }}>{t('modelNameDesc')}</p>
                 </div>
             )}
 
@@ -223,13 +244,13 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                     style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: 'none', color: '#9ca3af', cursor: 'pointer', fontSize: '0.9rem', padding: 0 }}
                 >
                     {showAdvanced ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                    <span style={{ fontWeight: 600 }}>Advanced Provider Settings</span>
+                    <span style={{ fontWeight: 600 }}>{t('advancedProviderSettings')}</span>
                 </button>
 
                 {showAdvanced && (
                     <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px', paddingLeft: '16px', borderLeft: '2px solid #374151' }}>
                         <div className="form-group">
-                            <label htmlFor="maxTweetsInput">Max Tweets to Extract</label>
+                            <label htmlFor="maxTweetsInput">{t('maxTweetsExtract')}</label>
                             <input
                                 id="maxTweetsInput"
                                 className="text-input"
@@ -243,9 +264,27 @@ export default function ProviderConfig({ settings, updateSettings }: Props) {
                                 }}
                             />
                             <p className="help-text" style={{ marginTop: '8px' }}>
-                                Reduce this number to speed up distillation testing, or increase it for deeper context.
-                                <br />
-                                <strong style={{ color: '#d1d5db' }}>※ Note: When using "X Grok (Redirect)", extraction is automatically capped at ~15 posts to avoid URL length errors.</strong>
+                                {t('maxTweetsDesc')}
+                            </p>
+                        </div>
+
+                        <div className="form-group" style={{ background: '#f0f4ff', padding: '12px', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1e3a5f', fontWeight: 500 }}>
+                                <input
+                                    type="checkbox"
+                                    checked={settings.provider === 'grok'}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            updateSettings({ provider: 'grok', customModelName: '' });
+                                        } else {
+                                            updateSettings({ provider: 'gemini', customModelName: DEFAULT_MODELS.gemini });
+                                        }
+                                    }}
+                                />
+                                {t('grokRedirectMode')}
+                            </label>
+                            <p className="help-text" style={{ marginTop: '8px', fontSize: '0.85rem', color: '#4b5563' }}>
+                                {t('grokRedirectDesc')}
                             </p>
                         </div>
                     </div>

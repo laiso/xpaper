@@ -2,9 +2,10 @@ import { defineManifest } from '@crxjs/vite-plugin'
 
 export default defineManifest({
   manifest_version: 3,
-  name: 'Xpaper',
-  description: 'Craft your personal newsletter with AI',
+  name: '__MSG_extensionName__',
+  description: '__MSG_extensionDescription__',
   version: '1.1.1',
+  default_locale: 'en',
   permissions: ['storage'],
   host_permissions: [
     'https://x.com/*',

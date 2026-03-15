@@ -7,6 +7,7 @@ import { buildPrompt, buildGrokPrompt } from '../lib/prompt-builder';
 import { formatApiResponse } from '../lib/result-formatter';
 import { getLocale, SupportedLanguage } from '../lib/locales';
 import { isChromeBuiltinAiAvailable } from '../lib/ai-readiness';
+import { t, tWithCount } from '../lib/i18n';
 type Props = {
     extractFn: (maxTweets?: number, maxScrolls?: number, signal?: AbortSignal) => Promise<any[]>;
 };
@@ -40,7 +41,7 @@ const GrokLink = ({ href, children, ...props }: any) => {
                         e.stopPropagation();
                         window.open(`https://x.com/i/grok?text=${encodeURIComponent(safeHref)}`, '_blank');
                     }}
-                    title="Ask Grok about this post"
+                    title={t('askGrokTooltip')}
                     style={{
                         background: 'var(--hover-bg)', border: 'none', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -163,7 +164,7 @@ export default function App({ extractFn }: Props) {
         try {
             chrome.runtime.sendMessage({ action: 'OPEN_OPTIONS' });
         } catch (e) {
-            alert("Extension updated. Please reload the page (F5).");
+            alert(t('extensionUpdatedError'));
         }
     };
 
@@ -194,7 +195,7 @@ export default function App({ extractFn }: Props) {
             }
 
             if (!tweetsData || tweetsData.length === 0) {
-                updateState(false, { count: 0, result: "No tweets found on the current screen." });
+                updateState(false, { count: 0, result: t('noTweetsFound') });
                 return;
             }
 
@@ -215,7 +216,7 @@ export default function App({ extractFn }: Props) {
             console.error('Extraction flow failed:', err);
             updateState(false, {
                 count: 0,
-                result: `Error: ${err.message || 'Unknown error occurred.'}`
+                result: `Error: ${err.message || t('unknownError')}`
             });
         }
     };
@@ -252,7 +253,7 @@ export default function App({ extractFn }: Props) {
             }
 
             if (!tweetsData || tweetsData.length === 0) {
-                updateState(false, { count: 0, result: "No tweets found on the current screen." });
+                updateState(false, { count: 0, result: t('noTweetsFound') });
                 return;
             }
 
@@ -301,7 +302,7 @@ export default function App({ extractFn }: Props) {
 
                 // If Built-in AI failed or wasn't available, we don't fallback anymore. We just throw an error.
                 if (!cleanResult) {
-                    throw new Error("Chrome Built-in AI is not available or failed to generate text. Please ensure it is enabled in chrome://flags.");
+                    throw new Error(t('chromeAiNotAvailable'));
                 }
             }
 
@@ -321,8 +322,8 @@ export default function App({ extractFn }: Props) {
             // Handle context invalidation explicitly
             const isContextInvalidated = err.message && err.message.includes('Extension context invalidated');
             const errorMessage = isContextInvalidated
-                ? '⚠️ Extension was updated. Please reload (F5) the X.com tab.'
-                : `Error: ${err.message || 'Unknown error occurred.'}`;
+                ? t('extensionUpdatedReload')
+                : `Error: ${err.message || t('unknownError')}`;
 
             updateState(false, {
                 count: extractedData?.count || 0,
@@ -344,7 +345,7 @@ export default function App({ extractFn }: Props) {
                         handleExtract();
                     }
                 }}
-                title={activeProvider === 'grok' ? "Summarize with Grok" : "Publish Xpaper"}
+                title={activeProvider === 'grok' ? t('summarizeWithGrok') : t('publishXpaper')}
             >
                 <Sparkles size={24} />
             </button>
@@ -356,10 +357,10 @@ export default function App({ extractFn }: Props) {
                         <h1>Xpaper</h1>
                     </div>
                     <div className="header-right">
-                        <button className="icon-btn" onClick={openOptions} title="Settings">
+                        <button className="icon-btn" onClick={openOptions} title={t('settingsTitle')}>
                             <SettingsIcon size={20} />
                         </button>
-                        <button className="icon-btn close-btn" onClick={onClose} title="Close">
+                        <button className="icon-btn close-btn" onClick={onClose} title={t('closeTitle')}>
                             <X size={24} />
                         </button>
                     </div>
@@ -371,9 +372,9 @@ export default function App({ extractFn }: Props) {
                             <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
                                 <Sparkles size={48} style={{ color: 'var(--accent-color)', opacity: 0.5 }} />
                             </div>
-                            <h2 style={{ fontFamily: 'inherit', color: 'var(--text-primary)', margin: '0 0 8px 0' }}>Ready to Publish</h2>
+                            <h2 style={{ fontFamily: 'inherit', color: 'var(--text-primary)', margin: '0 0 8px 0' }}>{t('readyToPublish')}</h2>
                             <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>
-                                Click the button below to curate your timeline into a personalized edition.
+                                {t('readyToPublishDesc')}
                             </p>
                         </div>
                     )}
@@ -381,7 +382,7 @@ export default function App({ extractFn }: Props) {
                     {isExtracting && (
                         <div className="extracting-state">
                             <Loader2 className="spinner" size={48} />
-                            <p>{extractionPhase === 'scrolling' ? 'Scrolling timeline...' : 'Generating Xpaper...'}</p>
+                            <p>{extractionPhase === 'scrolling' ? t('scrollingTimeline') : t('generatingXpaper')}</p>
                         </div>
                     )}
 
@@ -389,7 +390,7 @@ export default function App({ extractFn }: Props) {
                         <div className="result-state">
                             <div className="result-header">
                                 <Check size={16} />
-                                <span>Processed {extractedData.count} items</span>
+                                <span>{tWithCount('processedItems', extractedData.count)}</span>
                             </div>
 
                             <div className="result-card">
@@ -398,11 +399,11 @@ export default function App({ extractFn }: Props) {
                                         <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px', borderRadius: '50%' }}>
                                             <SettingsIcon size={32} />
                                         </div>
-                                        <h2 style={{ fontFamily: 'inherit', fontSize: '1.2rem', margin: 0, color: 'var(--text-primary)' }}>API Key Required</h2>
-                                        <p style={{ fontFamily: 'inherit', margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>You need to set up a Cloud LLM API Key (like Google Gemini) to start distilling.</p>
+                                        <h2 style={{ fontFamily: 'inherit', fontSize: '1.2rem', margin: 0, color: 'var(--text-primary)' }}>{t('apiKeyRequired')}</h2>
+                                        <p style={{ fontFamily: 'inherit', margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{t('apiKeyRequiredDesc')}</p>
                                         <button className="primary-button" onClick={openOptions} style={{ marginTop: '8px' }}>
                                             <SettingsIcon size={20} />
-                                            <span>Open Settings</span>
+                                            <span>{t('openSettings')}</span>
                                         </button>
                                     </div>
                                 ) : (
@@ -439,7 +440,7 @@ export default function App({ extractFn }: Props) {
                             {extractedData && extractedData.count > 0 && extractedData.result && !extractedData.result.startsWith('Error') && extractedData.result !== 'MISSING_KEY' && (
                                 <button className="secondary-button" style={{ width: '100%' }} onClick={() => handleCopy(extractedData.result!)}>
                                     {isCopied ? <Check size={18} /> : <Copy size={18} />}
-                                    <span>{isCopied ? 'Copied to Clipboard!' : 'Copy Result'}</span>
+                                    <span>{isCopied ? t('copiedToClipboard') : t('copyResult')}</span>
                                 </button>
                             )}
                         </>

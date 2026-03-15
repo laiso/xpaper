@@ -8,6 +8,7 @@ import ProviderConfig from './components/ProviderConfig'
 import { encryptText, decryptText } from '../lib/crypto'
 import { getLocale } from '../lib/locales'
 import { isChromeBuiltinAiAvailable } from '../lib/ai-readiness'
+import { t } from '../lib/i18n'
 
 import './index.css'
 
@@ -42,7 +43,7 @@ const defaultSettings: Settings = {
         }
     ],
     activeTopicId: 'default',
-    provider: 'grok',
+    provider: 'gemini',
     apiKeys: {
         openai: '',
         anthropic: '',
@@ -119,13 +120,13 @@ function App() {
         <div className="options-container">
             <header className="options-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                    <h1>Xpaper <span className="badge">Options</span></h1>
-                    <p className="subtitle">Configure your personal Xpaper AI settings.</p>
+                    <h1>Xpaper <span className="badge">{t('optionsTitle')}</span></h1>
+                    <p className="subtitle">{t('optionsSubtitle')}</p>
                 </div>
                 {isSaved && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontSize: '0.875rem' }}>
                         <Save size={16} />
-                        <span>Saved</span>
+                        <span>{t('saved')}</span>
                     </div>
                 )}
             </header>
