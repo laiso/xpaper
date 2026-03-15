@@ -2,11 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
-      - '.github/**'
+    tags:
+      - 'v*'
 
 jobs:
   release:
@@ -27,50 +24,26 @@ jobs:
       - name: Build extension
         run: bun run build
 
-      - name: Get current version
+      - name: Get version from tag
         id: version
-        run: |
-          VERSION=$(node -p "require('./dist/manifest.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Check if tag exists
-        id: tag_check
-        run: |
-          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Pack CRX
-        if: steps.tag_check.outputs.exists == 'false'
         run: |
           npm install -g crx@5.0.1
           crx pack dist -o xpaper-${{ steps.version.outputs.version }}.crx
 
       - name: Create ZIP for Chrome Web Store
-        if: steps.tag_check.outputs.exists == 'false'
         run: |
           cd dist
           zip -r ../xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip .
           cd ..
 
       - name: Create Release
-        if: steps.tag_check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: Xpaper v${{ steps.version.outputs.version }}
           files: |
             xpaper-${{ steps.version.outputs.version }}.crx
             xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip
           generate_release_notes: true
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Git Tag
-        if: steps.tag_check.outputs.exists == 'false'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git tag "v${{ steps.version.outputs.version }}"
-          git push origin "v${{ steps.version.outputs.version }}"
