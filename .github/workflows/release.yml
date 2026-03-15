@@ -48,13 +48,22 @@ jobs:
           npm install -g crx@5.0.1
           crx pack dist -o xpaper-${{ steps.version.outputs.version }}.crx
 
+      - name: Create ZIP for Chrome Web Store
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          cd dist
+          zip -r ../xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip .
+          cd ..
+
       - name: Create Release
         if: steps.tag_check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: Xpaper v${{ steps.version.outputs.version }}
-          files: xpaper-${{ steps.version.outputs.version }}.crx
+          files: |
+            xpaper-${{ steps.version.outputs.version }}.crx
+            xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip
           generate_release_notes: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
