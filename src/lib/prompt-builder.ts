@@ -6,7 +6,7 @@ export function buildPrompt(tweets: TweetData[], userInstructions: string, langu
     const userPrompt = `${userInstructions}\n\nContent to Distill:\n<tweets>\n${formattedTweets}\n</tweets>`;
 
     const locale = getLocale(language);
-    const systemPrompt = locale.systemPrompt;
+    const systemPrompt = `${locale.systemPrompt}\n\nYou may use the built-in Web Search/Grounding feature to verify latest facts if needed, and cite sources for important information.`;
 
     return { systemPrompt, userPrompt };
 }
