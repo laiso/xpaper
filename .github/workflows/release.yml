@@ -31,20 +31,10 @@ jobs:
       - name: Create release asset directory
         run: mkdir -p release-assets
 
-      - name: Pack CRX
-        if: ${{ secrets.CHROME_EXTENSION_KEY != '' }}
-        run: |
-          printf '%s' '${{ secrets.CHROME_EXTENSION_KEY }}' > key.pem
-          npx crx pack dist -p key.pem -o release-assets/xpaper-${{ steps.version.outputs.version }}.crx
-
       - name: Create ZIP for Chrome Web Store
         run: |
           cd dist
           zip -r ../release-assets/xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip .
-
-      - name: Remove temporary key
-        if: ${{ always() }}
-        run: rm -f key.pem
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
