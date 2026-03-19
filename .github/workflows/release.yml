@@ -19,7 +19,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build extension
         run: bun run build
@@ -28,22 +28,27 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
+      - name: Create release asset directory
+        run: mkdir -p release-assets
+
       - name: Pack CRX
+        if: ${{ secrets.CHROME_EXTENSION_KEY != '' }}
         run: |
-          npm install -g crx@5.0.1
-          crx pack dist -o xpaper-${{ steps.version.outputs.version }}.crx
+          printf '%s' '${{ secrets.CHROME_EXTENSION_KEY }}' > key.pem
+          npx crx pack dist -p key.pem -o release-assets/xpaper-${{ steps.version.outputs.version }}.crx
 
       - name: Create ZIP for Chrome Web Store
         run: |
           cd dist
-          zip -r ../xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip .
-          cd ..
+          zip -r ../release-assets/xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip .
+
+      - name: Remove temporary key
+        if: ${{ always() }}
+        run: rm -f key.pem
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            xpaper-${{ steps.version.outputs.version }}.crx
-            xpaper-${{ steps.version.outputs.version }}-chrome-webstore.zip
+          files: release-assets/*
           generate_release_notes: true
           token: ${{ secrets.GITHUB_TOKEN }}

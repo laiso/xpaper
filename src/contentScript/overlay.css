@@ -205,20 +205,6 @@
     background-color: var(--bg-color);
 }
 
-/* Scrollbar for main content */
-.xpaper-main::-webkit-scrollbar {
-    width: 8px;
-}
-
-.xpaper-main::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.xpaper-main::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 4px;
-}
-
 .empty-state {
     text-align: center;
     margin: auto;
@@ -280,20 +266,6 @@
     overflow-y: auto;
     /* Let the paper itself scroll! */
     margin-bottom: 0px;
-}
-
-/* Scrollbar for the newspaper paper itself */
-.result-card::-webkit-scrollbar {
-    width: 6px;
-}
-
-.result-card::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.result-card::-webkit-scrollbar-thumb {
-    background-color: var(--paper-border);
-    border-radius: 4px;
 }
 
 /* Markdown Styling for Native feel */
